@@ -1,0 +1,3 @@
+# Catch-ups are built from the Book Text only, never the AI's memory
+
+The AI writes a Catch-up only from Book Text it can actually read: uploaded by the Reader, found in a full-text online library, or pasted by the Reader. It never uses what it remembers about the book. A "memory mode" for Readers who can't provide the text was considered and dropped. The AI's memory of a book includes the ending, so spoilers leak into what it writes. It also can't reliably tell where chapters begin and end, and it invents details. Readers without a file are offered an online library search or pasting the text instead.
