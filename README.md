@@ -1,4 +1,4 @@
-# Book Sync
+# Book Catch-up
 
 A prompt that turns any AI chatbot (NotebookLM, ChatGPT, Claude, Gemini, Grok, ...) into a tool that writes a spoiler-free **Catch-up** of a book up to the chapter you finished, so you can keep reading from the next one.
 

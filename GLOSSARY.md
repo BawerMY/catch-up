@@ -1,4 +1,4 @@
-# Book Sync
+# Book Catch-up
 
 A chatbot-agnostic prompt recipe that turns a chat session into a tool for readers who paused a book partway through and want to pick it back up without starting over.
 

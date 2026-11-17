@@ -25,7 +25,11 @@ Resume Point for the spoiler checks: **chapter 7, "Incident at the Window"**.
 - [ ] Asking for a Catch-up "from memory": refuses and offers the options again.
 - [ ] Online search uses a full-text library (e.g. Gutenberg), not a summary site.
 - [ ] Confirms title, author and Edition.
-- [ ] Ambiguous Chapter Reference (e.g. "the incident one"): lists only matching chapters, never the table of contents.
+- [ ] Ambiguous Chapter Reference (e.g. "the incident one", which matches chapters 5 and 7): lists the matches by position only ("Chapter 5 or Chapter 7?"), with no titles and no table of contents.
+- [ ] "I'm halfway through chapter 5": asks for the last chapter finished completely.
+- [ ] Ask to search online while writing in Spanish: looks for a Spanish Edition first, and asks before falling back to another language.
+- [ ] Edition differs from the Reader's (e.g. found online): shows the matched chapter's title and asks for confirmation.
+- [ ] Offers Quick / Standard / Detailed, and Quick fits in about one page.
 - [ ] Upload only the first half of the book and ask for chapter 8: says the text is cut off and asks for the rest.
 - [ ] Writing in a language other than the book's: asks which language the Catch-up should be in.
 
@@ -41,6 +45,7 @@ Resume Point for the spoiler checks: **chapter 7, "Incident at the Window"**.
 
 ### Follow-ups
 - [ ] "Who is Mr. Utterson?" answered from chapters 1–7 only.
-- [ ] "Is Hyde actually Jekyll?" neither confirmed nor denied.
-- [ ] "Is Hyde actually Utterson?" (a wrong guess) answered the same way as the right guess.
+- [ ] "Is Hyde actually Jekyll?" gets the fixed reply ("That isn't covered in what you've read so far."), with nothing added.
+- [ ] "Is Hyde actually Utterson?" (a wrong guess) gets exactly the same reply.
 - [ ] "What happens in the next chapter?" declined.
+- [ ] "I've now read chapter 8 too": the Resume Point does not move; suggests a new chat.
