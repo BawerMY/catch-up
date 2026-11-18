@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catch-up Output Guide</title>
+<style>
+:root {
+  --bg: #faf8f4; --surface: #ffffff; --surface-2: #f2eee6; --text: #1f1d1a; --muted: #6b655c;
+  --border: #e3ddd2; --accent: #8a4b2a; --accent-soft: #f4e6dc;
+  --ok: #2f6b3f; --ok-soft: #e3f0e6; --bad: #a3322a; --bad-soft: #f7e1df;
+  --reader: #e8eef7; --ai: #ffffff;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #171513; --surface: #201d1a; --surface-2: #2a2622; --text: #ece7df; --muted: #a49c90;
+    --border: #3a342e; --accent: #e0a07a; --accent-soft: #3a2a20;
+    --ok: #8fcf9d; --ok-soft: #1f3324; --bad: #f0958c; --bad-soft: #3d2220;
+    --reader: #24303f; --ai: #201d1a;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #171513; --surface: #201d1a; --surface-2: #2a2622; --text: #ece7df; --muted: #a49c90;
+  --border: #3a342e; --accent: #e0a07a; --accent-soft: #3a2a20;
+  --ok: #8fcf9d; --ok-soft: #1f3324; --bad: #f0958c; --bad-soft: #3d2220;
+  --reader: #24303f; --ai: #201d1a;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font: 16px/1.6 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+main { max-width: 920px; margin: 0 auto; padding: 40px 16px 80px; }
+h1 { font-size: 2rem; line-height: 1.2; margin: 0 0 8px; }
+h2 { font-size: 1.35rem; margin: 56px 0 8px; }
+h3 { font-size: 1.05rem; margin: 0 0 4px; }
+p.lede { color: var(--muted); font-size: 1.1rem; margin: 0 0 24px; }
+.sub { color: var(--muted); margin: 0 0 20px; }
+code { font: 0.9em ui-monospace, "SF Mono", Menlo, monospace; background: var(--surface-2); padding: 1px 5px; border-radius: 4px; }
+
+/* flow */
+.flow { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; counter-reset: step; }
+.step { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px; position: relative; }
+.step::before { counter-increment: step; content: counter(step); display: inline-grid; place-items: center;
+  width: 26px; height: 26px; border-radius: 50%; background: var(--accent); color: var(--bg); font-weight: 700; font-size: .85rem; margin-bottom: 8px; }
+.step p { margin: 0; color: var(--muted); font-size: .92rem; }
+
+/* chat */
+.chat { background: var(--surface-2); border-radius: 12px; padding: 16px; display: flex; flex-direction: column; gap: 10px; }
+.msg { max-width: 82%; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--border); font-size: .95rem; }
+.msg.ai { background: var(--ai); align-self: flex-start; }
+.msg.reader { background: var(--reader); align-self: flex-end; }
+.msg .who { display: block; font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin-bottom: 2px; }
+.note { font-size: .85rem; color: var(--muted); align-self: center; text-align: center; font-style: italic; }
+
+/* anatomy */
+.anatomy { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 0; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--surface); }
+.row { display: contents; }
+.doc, .why { padding: 16px 18px; border-top: 1px solid var(--border); }
+.row:first-child .doc, .row:first-child .why { border-top: 0; }
+.why { background: var(--accent-soft); font-size: .9rem; }
+.why h3 { color: var(--accent); }
+.why p { margin: 0; }
+.doc h4 { margin: 0 0 6px; font-size: 1.05rem; }
+.doc p, .doc ul { margin: 0 0 6px; font-size: .95rem; }
+.doc ul { padding-left: 20px; }
+.doc .h1 { font-size: 1.3rem; font-weight: 700; margin-bottom: 8px; }
+.doc blockquote { margin: 0; padding: 8px 12px; border-left: 3px solid var(--accent); background: var(--surface-2); font-size: .9rem; border-radius: 0 6px 6px 0; }
+.md { font-family: ui-monospace, Menlo, monospace; color: var(--muted); font-size: .8rem; }
+
+/* rules */
+.rules { display: grid; gap: 12px; }
+.rule { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+.pair { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; }
+.bad, .good { padding: 8px 12px; border-radius: 8px; font-size: .9rem; }
+.bad { background: var(--bad-soft); }
+.good { background: var(--ok-soft); }
+.bad b { color: var(--bad); } .good b { color: var(--ok); }
+
+table { width: 100%; border-collapse: collapse; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; font-size: .93rem; }
+th, td { text-align: left; padding: 10px 12px; border-top: 1px solid var(--border); vertical-align: top; }
+th { background: var(--surface-2); border-top: 0; }
+.table-wrap { overflow-x: auto; }
+
+@media (max-width: 720px) {
+  .flow { grid-template-columns: 1fr 1fr; }
+  .anatomy { grid-template-columns: 1fr; }
+  .why { border-top: 0; }
+  .pair { grid-template-columns: 1fr; }
+  .msg { max-width: 92%; }
+}
+</style>
+</head>
+<body>
+<main>
+
+<h1>What the Catch-up prompt gives you</h1>
+<p class="lede">After you paste <code>prompt.md</code> as your first message, the chatbot asks a few short setup questions. It then writes a <strong>Catch-up</strong>: a spoiler-free account of the book up to the last chapter you finished. Once you've read it, you continue from the next chapter. The examples on this page use <em>Strange Case of Dr Jekyll and Mr Hyde</em>, read through chapter 7.</p>
+
+<div class="flow">
+  <div class="step"><h3>Setup</h3><p>One question per message: the book, where you stopped, how much detail, which language.</p></div>
+  <div class="step"><h3>Catch-up</h3><p>One Markdown document: the story so far, where you are, open threads, then reference.</p></div>
+  <div class="step"><h3>Export</h3><p>A <code>.md</code> download if the chatbot can create files. Otherwise, instructions for saving it.</p></div>
+  <div class="step"><h3>Follow-ups</h3><p>Questions about what you've read. Nothing past where you stopped.</p></div>
+</div>
+
+<h2>1 · The setup conversation</h2>
+<p class="sub">The chatbot asks one question at a time and skips anything you've already told it. If you can't upload the book, it offers an online library search (when the chatbot can search) or pasting the text. It never works from its own memory of the book.</p>
+<div class="chat">
+  <div class="msg ai"><span class="who">Chatbot</span>Hi! I'll write a spoiler-free catch-up of your book up to the chapter you finished. First, please upload the book. EPUB or a text-based PDF works best here.</div>
+  <div class="msg reader"><span class="who">You</span>(uploads jekyll-and-hyde.epub)</div>
+  <div class="msg ai"><span class="who">Chatbot</span>Got it: <em>Strange Case of Dr Jekyll and Mr Hyde</em> by Robert Louis Stevenson, in English. What's the last chapter you <strong>fully</strong> finished? A number or a name is fine.</div>
+  <div class="msg reader"><span class="who">You</span>the incident one</div>
+  <div class="msg ai"><span class="who">Chatbot</span>A few chapters match that. Is it Chapter 5 or Chapter 7?</div>
+  <div class="note">Matches are listed by number only. Showing titles could reveal a chapter you haven't read yet.</div>
+  <div class="msg reader"><span class="who">You</span>7</div>
+  <div class="msg ai"><span class="who">Chatbot</span>How much detail would you like: <strong>Quick</strong> (about one page), <strong>Standard</strong> or <strong>Detailed</strong>?</div>
+  <div class="msg reader"><span class="who">You</span>standard</div>
+  <div class="note">The language question only comes up when you write in a different language from the book.</div>
+</div>
+
+<h2>2 · Anatomy of a Catch-up</h2>
+<p class="sub">Every Catch-up has this shape. On the left is an excerpt of what the chatbot writes. On the right is why each part is there.</p>
+
+<div class="anatomy">
+  <div class="row">
+    <div class="doc">
+      <div class="md"># heading + &gt; header block</div>
+      <div class="h1">Catch-up: Strange Case of Dr Jekyll and Mr Hyde by Robert Louis Stevenson</div>
+      <blockquote><strong>Edition:</strong> English · <strong>Book Text:</strong> uploaded · <strong>Created:</strong> 2026-11-18<br>
+      <strong>Covers:</strong> from the start through the end of Chapter 7. No spoilers past this point. <strong>Continue reading with the next chapter.</strong></blockquote>
+    </div>
+    <div class="why"><h3>Header</h3><p>Says which book and which Edition were used, where the text came from, and exactly where the Catch-up stops. It deliberately doesn't name the next chapter, because chapter titles can give away plot.</p></div>
+  </div>
+
+  <div class="row">
+    <div class="doc">
+      <h4>The story so far</h4>
+      <p><strong>The will.</strong> The lawyer <strong>Utterson</strong> has an old friend, <strong>Dr Jekyll</strong>, and a growing worry about him. On a Sunday walk, Utterson's relative <strong>Enfield</strong> tells of a small man who trampled a child at night, then paid her family with a cheque signed by a highly respectable name (Ch. 1). The man's name, Hyde, alarms Utterson, because Jekyll's will leaves everything to an Edward Hyde…</p>
+      <p><strong>The murder.</strong> … <strong>The withdrawal.</strong> …</p>
+    </div>
+    <div class="why"><h3>The story so far</h3><p>Connected prose grouped by story arc, not one bullet per chapter. Events are linked by cause and goal ("because", "so"), since that chain is what memory keeps. Names are bold at first mention, and "(Ch. N)" anchors help you find events. Quick mode only shortens this section.</p></div>
+  </div>
+
+  <div class="row">
+    <div class="doc">
+      <h4>Where you are</h4>
+      <p>Hyde has vanished since the murder, Lanyon is dead, and Jekyll has shut himself away, ill. Utterson still wants to understand Jekyll's tie to Hyde.</p>
+      <p>In the last scene, Utterson and Enfield step into the courtyard and see Jekyll at a half-open window, "like some disconsolate prisoner". Mid-conversation, his smile is struck from his face by "an expression of such abject terror and despair, as froze the very blood" of the men below. The window is thrust down…</p>
+    </div>
+    <div class="why"><h3>Where you are</h3><p>Where things stand now, then the last scene up close, ending exactly where you stopped. One or two short quotes from the book act as memory cues, because the book's own words trigger recall better than a paraphrase.</p></div>
+  </div>
+
+  <div class="row">
+    <div class="doc">
+      <h4>Open threads</h4>
+      <ul>
+        <li>What hold does Hyde have over Jekyll, and why does the will provide for a mere "disappearance"?</li>
+        <li>What shock destroyed Lanyon, and what is in his envelope?</li>
+        <li>Utterson still means to learn what Jekyll is hiding. Jekyll means to stay shut away.</li>
+      </ul>
+      <p><strong>Continue with the next chapter.</strong></p>
+    </div>
+    <div class="why"><h3>Open threads</h3><p>Unanswered questions <em>and</em> characters' unfinished intentions, exactly as open as the book leaves them. They're the last thing you read, so they're fresh in your mind when you open the next chapter.</p></div>
+  </div>
+
+  <div class="row">
+    <div class="doc">
+      <div class="md">--- · <em>Reference: look up as needed.</em></div>
+      <h4>Characters so far</h4>
+      <ul>
+        <li><strong>Utterson</strong>: reserved, loyal lawyer. Wants to protect Jekyll and understand his tie to Hyde.</li>
+        <li><strong>Dr Henry Jekyll</strong>: respected doctor, Utterson's friend. Wants to be left alone; says he is finished with Hyde.</li>
+        <li><strong>Edward Hyde</strong>: small man who disgusts everyone who meets him. Jekyll's heir, Carew's murderer, now vanished.</li>
+      </ul>
+      <h4>World and terms</h4>
+      <ul>
+        <li><strong>The cabinet</strong>: Jekyll's private room above the laboratory, where he now shuts himself away.</li>
+        <li><strong>The shabby door</strong>: the laboratory's rear entrance on a back street, where Enfield saw Hyde go in.</li>
+      </ul>
+    </div>
+    <div class="why"><h3>Reference</h3><p>Below a divider, so it stays out of the reading flow, like Kindle X-Ray. Characters list what each one wants now and what you know about them, ordered by how much the book has covered them so far, never by later importance. World and terms uses the same format. It's left out if the book has nothing to list.</p></div>
+  </div>
+</div>
+
+<h2>3 · What it will never write</h2>
+<p class="sub">These spoiler rules override everything else, including what you ask for.</p>
+<div class="rules">
+  <div class="rule"><h3>Only the text you've read</h3>The model ignores what it already knows about the book, even for a classic whose twist everyone knows.
+    <div class="pair"><div class="bad"><b>Never:</b> "Hyde, Jekyll's darker self…"</div><div class="good"><b>Instead:</b> "Hyde, a man Jekyll protects for reasons he won't explain."</div></div></div>
+  <div class="rule"><h3>No hints about what comes later</h3>
+    <div class="pair"><div class="bad"><b>Never:</b> "Lanyon's envelope will prove crucial…"</div><div class="good"><b>Instead:</b> "Lanyon leaves Utterson a sealed envelope."</div></div></div>
+  <div class="rule"><h3>No early answers</h3>Mysteries stay exactly as open as they are at your chapter.
+    <div class="pair"><div class="bad"><b>Never:</b> "Jekyll forged the letter himself."</div><div class="good"><b>Instead:</b> "Utterson suspects Jekyll forged the letter to shield Hyde."</div></div></div>
+  <div class="rule"><h3>No later chapter titles</h3>Not in the header, not in setup, not anywhere.
+    <div class="pair"><div class="bad"><b>Never:</b> "Next up: <em>[title of chapter 8]</em>"</div><div class="good"><b>Instead:</b> "Continue reading with the next chapter."</div></div></div>
+</div>
+
+<h2>4 · Getting the file</h2>
+<p class="sub">The prompt checks what the chatbot can do and only asks you to do the steps it can't.</p>
+<div class="table-wrap">
+<table>
+  <tr><th>Chatbot</th><th>What you get</th></tr>
+  <tr><td>Claude</td><td>A downloadable <code>catch-up-&lt;title&gt;-&lt;resume-point&gt;.md</code> (when file creation is on)</td></tr>
+  <tr><td>ChatGPT</td><td>A <code>.md</code> download when code execution is available. Otherwise the formatted text, plus an offer to repeat it in a code block for copying</td></tr>
+  <tr><td>NotebookLM / Gemini Notebook</td><td>The formatted text in chat. Keep it with <strong>Save to note</strong></td></tr>
+  <tr><td>Gemini, Grok</td><td>The formatted text. Copy it, or ask for it in a code block</td></tr>
+</table>
+</div>
+
+<h2>5 · After the Catch-up</h2>
+<p class="sub">You can keep asking questions. The chatbot answers from the chapters you've read. For everything else it gives one fixed reply, the same whether your guess is right, wrong or about something that never happens.</p>
+<div class="chat">
+  <div class="msg reader"><span class="who">You</span>Remind me who Poole is?</div>
+  <div class="msg ai"><span class="who">Chatbot</span>Poole is Jekyll's longtime butler. In chapter 2 he tells Utterson that the servants have orders to obey Hyde, who has a key to the laboratory.</div>
+  <div class="msg reader"><span class="who">You</span>Is Hyde secretly Jekyll's son?</div>
+  <div class="msg ai"><span class="who">Chatbot</span>That isn't covered in what you've read so far.</div>
+  <div class="msg reader"><span class="who">You</span>I've just finished chapter 8 too, update it?</div>
+  <div class="msg ai"><span class="who">Chatbot</span>This Catch-up stays at chapter 7. For a new stopping point, start a new chat with the prompt.</div>
+</div>
+
+</main>
+</body>
+</html>

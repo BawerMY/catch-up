@@ -1,0 +1,228 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Remembering What You Read</title>
+<style>
+:root {
+  --bg:#faf8f4; --surface:#ffffff; --surface-2:#f2eee6; --text:#1f1d1a; --muted:#6b655c; --border:#e3ddd2;
+  --accent:#8a4b2a; --accent-soft:#f4e6dc; --ok:#2f6b3f; --ok-soft:#e3f0e6; --bad:#a3322a; --bad-soft:#f7e1df;
+  --mid:#8a6a12; --mid-soft:#f6edd2; --ref:#3d5a80; --ref-soft:#e5ecf5;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg:#171513; --surface:#201d1a; --surface-2:#2a2622; --text:#ece7df; --muted:#a49c90; --border:#3a342e;
+  --accent:#e0a07a; --accent-soft:#3a2a20; --ok:#8fcf9d; --ok-soft:#1f3324; --bad:#f0958c; --bad-soft:#3d2220;
+  --mid:#e3c46a; --mid-soft:#3a3118; --ref:#9dbbe0; --ref-soft:#1f2a38; } }
+:root[data-theme="dark"] {
+  --bg:#171513; --surface:#201d1a; --surface-2:#2a2622; --text:#ece7df; --muted:#a49c90; --border:#3a342e;
+  --accent:#e0a07a; --accent-soft:#3a2a20; --ok:#8fcf9d; --ok-soft:#1f3324; --bad:#f0958c; --bad-soft:#3d2220;
+  --mid:#e3c46a; --mid-soft:#3a3118; --ref:#9dbbe0; --ref-soft:#1f2a38; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--text); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; }
+main { max-width:960px; margin:0 auto; padding:40px 16px 80px; }
+h1 { font-size:2rem; line-height:1.2; margin:0 0 8px; }
+h2 { font-size:1.35rem; margin:56px 0 6px; }
+h3 { font-size:1.02rem; margin:0 0 4px; }
+.lede { color:var(--muted); font-size:1.1rem; margin:0 0 20px; }
+.sub { color:var(--muted); margin:0 0 18px; }
+a { color:var(--accent); }
+.cite { font-size:.8rem; color:var(--muted); }
+.cite a { color:var(--muted); }
+.callout { border-left:4px solid var(--mid); background:var(--mid-soft); padding:12px 16px; border-radius:0 8px 8px 0; font-size:.95rem; }
+
+/* memory levels */
+.levels { display:grid; gap:8px; }
+.level { display:grid; grid-template-columns:180px 1fr; gap:12px; align-items:center; }
+.level .name { font-weight:600; font-size:.95rem; }
+.level .name small { display:block; font-weight:400; color:var(--muted); font-size:.8rem; }
+.track { background:var(--surface-2); border-radius:6px; height:30px; position:relative; overflow:hidden; }
+.fill { height:100%; border-radius:6px; display:flex; align-items:center; padding-left:10px; font-size:.8rem; color:#fff; white-space:nowrap; }
+.dims { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+.dim { background:var(--surface); border:1px solid var(--border); border-radius:999px; padding:4px 12px; font-size:.88rem; }
+.dim b { color:var(--accent); }
+
+/* findings */
+.grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:12px; }
+.card { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:14px 16px; display:flex; flex-direction:column; gap:6px; }
+.card p { margin:0; font-size:.93rem; }
+.card .so { background:var(--accent-soft); border-radius:6px; padding:6px 10px; font-size:.9rem; }
+.card .so::before { content:"→ For the Catch-up: "; font-weight:700; color:var(--accent); }
+.conf { font-size:.72rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase; border-radius:999px; padding:1px 8px; align-self:flex-start; }
+.conf.high { background:var(--ok-soft); color:var(--ok); }
+.conf.med { background:var(--mid-soft); color:var(--mid); }
+.conf.low { background:var(--bad-soft); color:var(--bad); }
+
+/* anatomy */
+.anatomy { display:grid; grid-template-columns:minmax(0,1fr) 260px; gap:16px; align-items:start; }
+.path { display:flex; flex-direction:column; gap:0; }
+.blk { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:12px 16px; position:relative; }
+.blk + .arrow { text-align:center; color:var(--muted); line-height:1; padding:4px 0; }
+.blk h3 { display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+.blk h3 .budget { font-weight:400; font-size:.8rem; color:var(--muted); }
+.blk p { margin:2px 0 0; font-size:.9rem; }
+.blk .ex { margin-top:6px; font-size:.86rem; font-style:italic; color:var(--muted); border-left:2px solid var(--border); padding-left:10px; }
+.blk.key { border:2px solid var(--accent); }
+.blk.ref { background:var(--ref-soft); border-color:transparent; }
+.blk.ref h3 { color:var(--ref); }
+.divider { text-align:center; font-size:.8rem; color:var(--muted); margin:14px 0 8px; letter-spacing:.08em; text-transform:uppercase; }
+.side { position:sticky; top:16px; display:flex; flex-direction:column; gap:10px; }
+.side .card { font-size:.88rem; }
+
+/* scorecard */
+.table-wrap { overflow-x:auto; border:1px solid var(--border); border-radius:10px; }
+table { width:100%; border-collapse:collapse; background:var(--surface); font-size:.88rem; min-width:720px; }
+th, td { padding:8px 10px; border-top:1px solid var(--border); text-align:center; vertical-align:middle; }
+th:first-child, td:first-child { text-align:left; }
+thead th { background:var(--surface-2); border-top:0; }
+.pp { color:var(--ok); font-weight:700; } .p { color:var(--ok); } .z { color:var(--muted); } .m { color:var(--bad); font-weight:700; }
+.hybrid { display:flex; flex-wrap:wrap; gap:8px; margin-top:14px; }
+.chip { background:var(--surface); border:1px solid var(--border); border-radius:8px; padding:6px 10px; font-size:.88rem; }
+.chip b { color:var(--accent); }
+
+ul.thin { margin:0; padding-left:20px; }
+ul.thin li { margin:4px 0; }
+
+@media (max-width:760px) {
+  .grid { grid-template-columns:1fr; }
+  .anatomy { grid-template-columns:1fr; }
+  .side { position:static; }
+  .level { grid-template-columns:1fr; gap:4px; }
+}
+</style>
+</head>
+<body>
+<main>
+
+<h1>How to bring a paused book back to mind</h1>
+<p class="lede">What research on memory and reading says about the best way to rebuild a Reader's context, and what that means for the Catch-up's anatomy. This page summarizes <code>docs/research/catch-up-anatomy.md</code>, which has the full citations.</p>
+
+<div class="callout"><strong>Honesty first:</strong> no study tests "a document that helps someone resume a novel after a pause of weeks". Everything here is <em>transferred</em> from nearby research: how stories are understood, how memory works, and how people resume interrupted tasks. Each recommendation carries a confidence label.</div>
+
+<h2>1 · What you actually remember from a book</h2>
+<p class="sub">Reading builds three layers of memory, and they fade at very different speeds. What lasts is a mental model of the <em>situation</em>, not the words.</p>
+<div class="levels">
+  <div class="level"><div class="name">Situation model<small>who, where, what happened, why</small></div><div class="track"><div class="fill" style="width:88%;background:var(--ok)">lasts longest</div></div></div>
+  <div class="level"><div class="name">Textbase<small>the ideas the sentences stated</small></div><div class="track"><div class="fill" style="width:50%;background:var(--mid)">fades</div></div></div>
+  <div class="level"><div class="name">Surface form<small>the exact wording</small></div><div class="track"><div class="fill" style="width:16%;background:var(--bad)">gone fast</div></div></div>
+</div>
+<p class="cite">Bar lengths are illustrative, not measured. Kintsch et al. 1990; Fletcher &amp; Chrysler 1990; Zwaan &amp; Radvansky 1998.</p>
+
+<p style="margin:18px 0 4px">Readers organize that situation model around <strong>five dimensions</strong>, and update it whenever one of them changes:</p>
+<div class="dims">
+  <span class="dim"><b>When</b> time</span><span class="dim"><b>Where</b> space</span><span class="dim"><b>Who</b> protagonist</span><span class="dim"><b>Why</b> causality</span><span class="dim"><b>Wants</b> goals</span>
+</div>
+<p class="cite">Event-indexing model: Zwaan, Langston &amp; Graesser 1995.</p>
+<p style="margin-top:14px">The Catch-up's job is to <strong>rebuild this model</strong>, not to repeat the text. A reader who remembers every event but not <em>why</em> they happened isn't ready to continue.</p>
+
+<h2>2 · Six findings that shape the design</h2>
+<div class="grid">
+  <div class="card"><span class="conf high">strong evidence</span><h3>The cause-and-effect chain is what sticks</h3>
+    <p>Events linked by cause and effect to other events are recalled more, summarized more and rated more important. Dead-end events fade.</p>
+    <p class="so">Tell the plot as a chain of "because" and "so", and drop dead ends.</p>
+    <p class="cite"><a href="https://doi.org/10.1016/0749-596X(85)90049-X">Trabasso &amp; van den Broek 1985</a> · <a href="https://doi.org/10.1016/0304-422X(80)90021-2">Black &amp; Bower 1980</a></p></div>
+
+  <div class="card"><span class="conf high">strong evidence</span><h3>Context must come <em>before</em> detail</h3>
+    <p>When readers got a passage's topic before reading it, comprehension and recall jumped. Getting the same topic after reading didn't help.</p>
+    <p class="so">Open with a short frame: when, where, who, what just happened, who wants what.</p>
+    <p class="cite"><a href="https://doi.org/10.1016/S0022-5371(72)80006-9">Bransford &amp; Johnson 1972</a> · <a href="https://doi.org/10.3102/00028312017002211">Luiten et al. 1980</a></p></div>
+
+  <div class="card"><span class="conf med">medium (indirect)</span><h3>Stories beat essays for memory</h3>
+    <p>A meta-analysis of more than 33,000 participants found narrative texts are understood and recalled better than expository ones. It compared genres, not prose versus bullet lists of the same content.</p>
+    <p class="so">Write the story so far as connected prose, not a per-chapter list.</p>
+    <p class="cite"><a href="https://doi.org/10.3758/s13423-020-01853-1">Mar et al. 2021</a></p></div>
+
+  <div class="card"><span class="conf med">medium (lab tasks)</span><h3>Resuming needs a cue at the point of return</h3>
+    <p>Unfinished goals fade during an interruption. People pick a task back up faster when a cue from where they left off greets them. Interrupted readers lose inferred links more than stated facts.</p>
+    <p class="so">End with the last scene, so it's the final thing read before chapter X+1.</p>
+    <p class="cite"><a href="https://doi.org/10.1207/s15516709cog2601_2">Altmann &amp; Trafton 2002</a> · <a href="https://doi.org/10.1037/xge0000074">Foroughi et al. 2015</a></p></div>
+
+  <div class="card"><span class="conf med">medium</span><h3>The book's own words are the best cues</h3>
+    <p>A memory cue works when it matches how the memory was formed. The book's names, invented terms and distinctive phrases trigger recall better than paraphrases.</p>
+    <p class="so">Keep names and terms exactly as the book has them, and quote one or two short lines from the last page.</p>
+    <p class="cite"><a href="https://doi.org/10.1037/h0020071">Tulving &amp; Thomson 1973</a></p></div>
+
+  <div class="card"><span class="conf high">consistent</span><h3>Spoilers do hurt</h3>
+    <p>A famous 2011 study found that spoilers don't spoil stories, but later studies with more participants did not replicate it: spoiled stories were less suspenseful and less enjoyable.</p>
+    <p class="so">Keep the strict rules. Unlike TV recaps, which pick clips that set up the next episode, never pick content by what comes next.</p>
+    <p class="cite"><a href="https://doi.org/10.1177/0093650214564051">Johnson &amp; Rosenbaum 2015</a> · <a href="https://doi.org/10.1080/0163853X.2016.1141350">Levine et al. 2016</a></p></div>
+</div>
+
+<p style="margin-top:16px"><strong>Practice agrees:</strong> Kindle's <em>Story So Far</em> describes itself as "spoiler-free refreshers up to where you've read," built around <strong>storylines</strong> and <strong>character arcs</strong>. Kindle <em>X-Ray</em> keeps characters and terms as separate <strong>look-up</strong> material, outside the reading flow. <span class="cite">(<a href="https://www.aboutamazon.com/news/books-and-authors/kindle-recaps-feature-ebook-series-refreshers">Amazon</a>)</span></p>
+
+<h2>3 · The anatomy the evidence points to</h2>
+<p class="sub">The research separates two jobs: a <strong>reading path</strong>, read once top to bottom to rebuild the model and end at the point of return, and a <strong>reference appendix</strong> to look things up. Examples use <em>Jekyll and Hyde</em> through chapter 7.</p>
+
+<div class="anatomy">
+  <div class="path">
+    <div class="blk"><h3>Header <span class="budget">as now</span></h3><p>Book, Edition, where the text came from, the stopping point, and "no spoilers past here".</p></div>
+    <div class="arrow">↓</div>
+    <div class="blk key"><h3>1. Where you are <span class="budget">40–80 words · never shortened</span></h3><p>The frame: when, where, who, what just happened and why, who wants what.</p>
+      <div class="ex">Months after Carew's murder, Hyde has vanished and Lanyon is dead after a shock he wouldn't explain. Jekyll has shut himself away again, and Utterson, still determined to understand Jekyll's tie to Hyde, has just watched him recoil in terror at his window.</div></div>
+    <div class="arrow">↓</div>
+    <div class="blk"><h3>2. The story so far <span class="budget">250–1,200 words · grows or shrinks with detail level</span></h3><p>Cause-and-effect prose grouped by <strong>story arc</strong>, not chapter. Names in bold at first mention, with chapter anchors inline.</p>
+      <div class="ex"><strong>The will.</strong> Because <strong>Enfield</strong>'s story names a man called Hyde, <strong>Utterson</strong> grows alarmed: Jekyll's will leaves everything to Hyde (Ch. 1–2). So he seeks Hyde out…</div></div>
+    <div class="arrow">↓</div>
+    <div class="blk"><h3>3. Open threads <span class="budget">3–7 items</span></h3><p>Unanswered questions <strong>and</strong> characters' unfinished intentions, phrased exactly as open as the book leaves them.</p>
+      <div class="ex">What hold does Hyde have over Jekyll? · Utterson means to find out what Jekyll is hiding.</div></div>
+    <div class="arrow">↓</div>
+    <div class="blk key"><h3>4. Right before you continue <span class="budget">120–300 words · never shortened</span></h3><p>The last scene at the highest detail: who, where, what was said, the mood at the cut, plus one or two short quotes. Then: "Continue with the next chapter."</p>
+      <div class="ex">…the window was thrust down. They walked on in silence until Utterson said, "God forgive us."</div></div>
+    <div class="divider">— reference: look up as needed —</div>
+    <div class="blk ref"><h3>Characters so far</h3><p>Each entry gives the character's role, <strong>what they want now</strong>, their relationships, and what the Reader knows or suspects. Ordered by weight in the text read so far, never by later importance. A list, not a wide table.</p></div>
+    <div class="blk ref" style="margin-top:8px"><h3>World and terms</h3><p>Places, factions and invented words. Omitted if there are none.</p></div>
+  </div>
+
+  <div class="side">
+    <div class="card"><h3>What changes from today</h3>
+      <p>✚ Plot becomes cause-and-effect prose grouped by arc (it was per-chapter bullets)</p>
+      <p>✚ Open threads include characters' intentions</p>
+      <p>✚ Characters and World move below the last scene, as reference</p>
+      <p>✚ Short quotes in the last scene</p>
+      <p>✚ Quick mode shortens only the story so far</p></div>
+    <div class="card"><h3>Deliberately not done</h3>
+      <p>✗ Last scene first: context has to come before detail</p>
+      <p>✗ Three repeated layers: too much repetition, no evidence</p>
+      <p>✗ Quizzes: they help long-term learning, not resuming now</p>
+      <p>✗ Wide tables: break up cause and effect, and render poorly on phones and in chat</p></div>
+  </div>
+</div>
+
+<h2>4 · How the prototype variants score</h2>
+<p class="sub">From <code>docs/prototypes/catch-up-anatomy-prototype.html</code>. <span class="pp">++</span> strongly supported · <span class="p">+</span> supported · <span class="z">0</span> neutral · <span class="m">−</span> against the evidence.</p>
+<div class="table-wrap">
+<table>
+  <thead><tr><th>Criterion</th><th>A Current</th><th>B Resume-first</th><th>C "Previously on"</th><th>D Tables</th><th>E Layered</th></tr></thead>
+  <tr><td>Frame before detail</td><td class="p">+</td><td class="m">−</td><td class="p">+</td><td class="z">0</td><td class="pp">++</td></tr>
+  <tr><td>Cause-and-effect prose for the plot</td><td class="m">−</td><td class="p">+</td><td class="pp">++</td><td class="m">−</td><td class="z">0/+</td></tr>
+  <tr><td>Last scene as the final cue</td><td class="pp">++</td><td class="m">−</td><td class="p">+</td><td class="p">+</td><td class="m">−</td></tr>
+  <tr><td>Open threads near the point of return</td><td class="z">0</td><td class="p">+</td><td class="p">+</td><td class="p">+</td><td class="z">0</td></tr>
+  <tr><td>Characters as look-up, by what they want</td><td class="z">0</td><td class="p">+</td><td class="p">+</td><td class="p">+</td><td class="p">+</td></tr>
+  <tr><td>Gist over detail</td><td class="z">0</td><td class="p">+</td><td class="p">+</td><td class="m">−</td><td class="z">0</td></tr>
+  <tr><td>Renders well in chat and on phones</td><td class="p">+</td><td class="p">+</td><td class="pp">++</td><td class="m">−</td><td class="p">+</td></tr>
+  <tr><td>Spoiler risk from the structure</td><td>low</td><td>low</td><td>medium</td><td>medium</td><td>low</td></tr>
+</table>
+</div>
+<p style="margin-top:14px"><strong>No variant wins as-is. The best-supported anatomy is a hybrid:</strong></p>
+<div class="hybrid">
+  <span class="chip"><b>E</b>'s short top frame</span>
+  <span class="chip"><b>C</b>'s cause-and-effect prose</span>
+  <span class="chip"><b>A</b>'s last scene, placed last</span>
+  <span class="chip"><b>B</b>'s reference appendix</span>
+  <span class="chip"><b>D</b>'s tables dropped</span>
+</div>
+<p class="cite" style="margin-top:8px">C's spoiler risk is "medium" because flowing prose invites ironic framing ("little did he know"), so spoiler rules 2 and 3 need extra care. That's one more reason the prompt's check before sending matters.</p>
+
+<h2>5 · Where the evidence is thin</h2>
+<ul class="thin">
+  <li><strong>No direct study</strong> of resuming a novel or of recap anatomy. Everything is transferred from nearby research.</li>
+  <li><strong>Prose versus list for the same content</strong> is untested. The narrative advantage compares genres.</li>
+  <li><strong>Word budgets and layering</strong> are judgment calls.</li>
+  <li><strong>Interruption studies</strong> use pauses of seconds to minutes, not weeks.</li>
+  <li><strong>TV recaps</strong> have no experimental literature, only media-studies analysis.</li>
+</ul>
+<p><strong>A cheap way to close the gap:</strong> give a few Readers with a real paused book either the hybrid or variant A, then measure (a) how ready they feel, (b) how long it takes them to feel back into the book, and (c) a few comprehension questions on the next chapter.</p>
+
+</main>
+</body>
+</html>

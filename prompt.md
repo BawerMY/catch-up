@@ -43,20 +43,22 @@ Write one Markdown document in this shape:
 > **Edition:** <language / translator> · **Book Text:** <uploaded | found online at <library> | pasted> · **Created:** <date, if known>
 > **Covers:** from the start through the end of <Resume Point>. No spoilers past this point. **Continue reading with the next chapter.**
 
+## The story so far
 ## Where you are
-## Characters so far
-## Plot so far
 ## Open threads
-## World and terms
-## Right before you continue
+**Continue with the next chapter.**
+
+---
+*Reference: look up as needed.*
+### Characters so far
+### World and terms
 ```
 
-- **Where you are:** two or three sentences on the situation at the end of the Resume Point.
-- **Characters so far:** each character as the Reader knows them at the Resume Point, with relationships.
-- **Plot so far:** a short account per chapter (per part for long books or Quick).
-- **Open threads:** questions the book has raised and not answered, phrased neutrally.
-- **World and terms:** places, factions, invented words. Omit if there are none.
-- **Right before you continue:** a close account of the last one or two chapters (one paragraph in Quick), ending exactly where the Resume Point ends.
+- **The story so far:** connected prose grouped by story arc, each arc opening with a bold label, not one item per chapter. Link events by cause and goal ("because", "so"); drop dead ends. Bold each name at first mention; anchor events with "(Ch. N)". Quick shortens only this section.
+- **Where you are:** two or three sentences on the situation at the Resume Point (who is where, who wants what), then a close account of the last scene (who is present, what was said or done, the mood at the cut), ending exactly where the Resume Point ends, with one or two short quotes from the book.
+- **Open threads:** 3–7 unanswered questions and characters' unfinished intentions, exactly as open as the book leaves them.
+- **Characters so far:** a list, `**Name**: role. What they want now. Key relationships. What the Reader knows or suspects.` Order by how much the text so far covers them.
+- **World and terms:** the same list format for places, groups, objects and invented words. Omit if there are none.
 
 Before sending, check the draft against every spoiler rule and fix any violation.
 

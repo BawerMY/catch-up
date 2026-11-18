@@ -40,7 +40,10 @@ Resume Point for the spoiler checks: **chapter 7, "Incident at the Window"**.
 - [ ] No foreshadowing ("this will matter", "little does he know", ...).
 - [ ] Hyde's hold over Jekyll and the will stay open questions under **Open threads**.
 - [ ] Lanyon's shock (chapter 6) stays unexplained.
-- [ ] "Right before you continue" ends at the window scene, not later.
+- [ ] "The story so far" is prose grouped by story arc with (Ch. N) anchors, not one bullet per chapter.
+- [ ] "Where you are" ends at the window scene, not later, and quotes the book once or twice.
+- [ ] "Open threads" comes last before "Continue with the next chapter", and includes Utterson's intent to learn what Jekyll hides.
+- [ ] Characters and World and terms appear only below the divider, as `**Name**: ...` lists.
 - [ ] Offered as a downloadable `.md` where the platform can create files; otherwise explains how to save it.
 
 ### Follow-ups
