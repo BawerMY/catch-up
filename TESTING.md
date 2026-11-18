@@ -29,7 +29,7 @@ Resume Point for the spoiler checks: **chapter 7, "Incident at the Window"**.
 - [ ] "I'm halfway through chapter 5": asks for the last chapter finished completely.
 - [ ] Ask to search online while writing in Spanish: looks for a Spanish Edition first, and asks before falling back to another language.
 - [ ] Edition differs from the Reader's (e.g. found online): shows the matched chapter's title and asks for confirmation.
-- [ ] Offers Quick / Standard / Detailed, and Quick fits in about one page.
+- [ ] Always asks Quick (default) or Detailed. Quick lands near 900 words (story so far ~500), Detailed near 1,800 (story so far ~1,000), within about 20%. Check on at least one large and one small model.
 - [ ] Upload only the first half of the book and ask for chapter 8: says the text is cut off and asks for the rest.
 - [ ] Writing in a language other than the book's: asks which language the Catch-up should be in.
 

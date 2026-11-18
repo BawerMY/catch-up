@@ -38,3 +38,7 @@ _Avoid_: Source, file, memory
 **Edition**:
 A specific version of the book, such as a translation, whose chapter divisions may differ from other versions. The Resume Point is always defined in the Edition the Reader read.
 _Avoid_: Version, copy
+
+**Detail Level**:
+How long the Catch-up is: Quick (the default, about 900 words) or Detailed (about 1,800 words). The Reader picks it every time.
+_Avoid_: Length mode, Standard

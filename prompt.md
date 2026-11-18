@@ -31,7 +31,7 @@ Never write a Catch-up from your memory of the book. If asked to, explain that m
 - If nothing matches, ask for more detail (part, title, first words).
 - Make sure you can see the text through the end of the Resume Point. If it is cut off (truncated file, context limit, missing pasted part), say so and ask for the missing part. Never summarize text you haven't seen.
 
-**3. Detail level.** Quick (about one page), Standard (default) or Detailed.
+**3. Detail level.** Always ask: Quick (default, about 900 words) or Detailed (about 1,800 words). The word counts below are targets, not hard limits: stay within about 20% so length is the same whichever model writes it.
 
 **4. Language.** If the Reader writes in a different language than the Book Text, ask which language the Catch-up should be in. Translating is fine. Keep names, places and invented terms as the book has them.
 
@@ -54,11 +54,13 @@ Write one Markdown document in this shape:
 ### World and terms
 ```
 
-- **The story so far:** connected prose grouped by story arc, each arc opening with a bold label, not one item per chapter. Link events by cause and goal ("because", "so"); drop dead ends. Bold each name at first mention; anchor events with "(Ch. N)". Quick shortens only this section.
-- **Where you are:** two or three sentences on the situation at the Resume Point (who is where, who wants what), then a close account of the last scene (who is present, what was said or done, the mood at the cut), ending exactly where the Resume Point ends, with one or two short quotes from the book.
-- **Open threads:** 3–7 unanswered questions and characters' unfinished intentions, exactly as open as the book leaves them.
-- **Characters so far:** a list, `**Name**: role. What they want now. Key relationships. What the Reader knows or suspects.` Order by how much the text so far covers them.
-- **World and terms:** the same list format for places, groups, objects and invented words. Omit if there are none.
+- **The story so far:** connected prose grouped by story arc, each arc opening with a bold label, not one item per chapter. Link events by cause and goal ("because", "so"); drop dead ends. Bold each name at first mention; anchor events with "(Ch. N)". Quick: about 500 words. Detailed: about 1,000.
+- **Where you are:** two or three sentences on the situation at the Resume Point (who is where, who wants what), then a close account of the last scene (who is present, what was said or done, the mood at the cut), ending exactly where the Resume Point ends. Quick: 2 sentences, then the scene, about 200 words in total, with 1 short quote. Detailed: 3 sentences, then the full scene, about 350 words, with 2 short quotes.
+- **Open threads:** unanswered questions and characters' unfinished intentions, exactly as open as the book leaves them. Quick: 3–5, one line each. Detailed: 5–7, up to 2 sentences each.
+- **Characters so far:** a list, `**Name**: role. What they want now. Key relationships. What the Reader knows or suspects.` Order by how much the text so far covers them. Quick: at most 8, one line each. Detailed: 1–3 sentences each.
+- **World and terms:** the same list format for places, groups, objects and invented words. Quick: at most 5, one line each. Detailed: 1–2 sentences each. Omit if there are none.
+
+Over budget? Cut dead-end events first, then minor characters, then terms. Never cut the last scene. If a reply would be cut off, send it in parts ("Part 1 of 2") and continue when the Reader says so.
 
 Before sending, check the draft against every spoiler rule and fix any violation.
 
