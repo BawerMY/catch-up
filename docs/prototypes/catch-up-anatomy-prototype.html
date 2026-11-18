@@ -1,0 +1,322 @@
+<!doctype html>
+<!--
+  PROTOTYPE, throwaway. Question: which Catch-up anatomy gives the Reader the best experience?
+  Five variants of the same Catch-up (Jekyll and Hyde, Resume Point: chapter 7), switchable via ?variant=A..E,
+  the bottom bar, or the left/right arrow keys. Each variant is pure Markdown, because that is all the prompt can output.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Catch-up Anatomy Prototype</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<style>
+:root { --bg:#f4f2ee; --chat:#ffffff; --text:#1f1d1a; --muted:#6b655c; --border:#e3ddd2; --accent:#8a4b2a; --soft:#f4e6dc; --code:#f2eee6; --bar:#1f1d1a; --bar-text:#fff; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg:#121110; --chat:#1e1b18; --text:#ece7df; --muted:#a49c90; --border:#38322c; --accent:#e0a07a; --soft:#3a2a20; --code:#2a2622; --bar:#ece7df; --bar-text:#121110; } }
+:root[data-theme="dark"] { --bg:#121110; --chat:#1e1b18; --text:#ece7df; --muted:#a49c90; --border:#38322c; --accent:#e0a07a; --soft:#3a2a20; --code:#2a2622; --bar:#ece7df; --bar-text:#121110; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--text); font:16px/1.6 system-ui,-apple-system,"Segoe UI",sans-serif; padding-bottom:110px; }
+main { max-width:760px; margin:0 auto; padding:24px 16px; }
+.brief { background:var(--soft); border-radius:10px; padding:12px 16px; margin-bottom:16px; font-size:.92rem; }
+.brief h2 { margin:0 0 4px; font-size:1.05rem; color:var(--accent); }
+.brief p { margin:4px 0; }
+.stats { display:flex; flex-wrap:wrap; gap:8px 16px; color:var(--muted); font-size:.85rem; margin:0 0 10px; align-items:center; }
+.stats button { font:inherit; border:1px solid var(--border); background:var(--chat); color:var(--text); border-radius:999px; padding:2px 12px; cursor:pointer; }
+.chat { background:var(--chat); border:1px solid var(--border); border-radius:14px; padding:8px 22px 18px; overflow-x:auto; }
+.chat::before { content:"Chatbot"; display:block; font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); padding-top:10px; }
+.chat h1 { font-size:1.45rem; line-height:1.25; }
+.chat h2 { font-size:1.15rem; margin-top:1.6em; }
+.chat h3 { font-size:1rem; margin-top:1.3em; }
+.chat blockquote { margin:0; padding:6px 14px; border-left:3px solid var(--accent); background:var(--code); border-radius:0 6px 6px 0; }
+.chat table { border-collapse:collapse; font-size:.9rem; width:100%; }
+.chat th, .chat td { border:1px solid var(--border); padding:6px 8px; text-align:left; vertical-align:top; }
+.chat th { background:var(--code); }
+.chat hr { border:0; border-top:1px solid var(--border); margin:20px 0; }
+pre.raw { white-space:pre-wrap; font:13px/1.5 ui-monospace,Menlo,monospace; margin:12px 0 0; }
+.switcher { position:fixed; left:50%; bottom:18px; transform:translateX(-50%); display:flex; align-items:center; gap:4px; background:var(--bar); color:var(--bar-text);
+  border-radius:999px; padding:6px; box-shadow:0 6px 24px rgba(0,0,0,.3); font-size:.9rem; max-width:calc(100vw - 32px); }
+.switcher button { border:0; background:transparent; color:inherit; font-size:1.1rem; width:36px; height:36px; border-radius:50%; cursor:pointer; }
+.switcher button:hover { background:rgba(127,127,127,.25); }
+.switcher span { padding:0 10px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight:600; }
+</style>
+</head>
+<body>
+<main>
+  <section class="brief" id="brief"></section>
+  <div class="stats"><span id="stats"></span><button id="rawToggle" type="button">Show raw Markdown</button></div>
+  <article class="chat" id="out"></article>
+</main>
+<nav class="switcher" aria-label="Prototype variant switcher">
+  <button id="prev" type="button" aria-label="Previous variant">←</button>
+  <span id="label"></span>
+  <button id="next" type="button" aria-label="Next variant">→</button>
+</nav>
+
+<script>
+const HEADER = `> **Edition:** English (Project Gutenberg #43) · **Book Text:** uploaded · **Created:** 2026-11-18
+> **Covers:** from the start through the end of Chapter 7. No spoilers past this point. **Continue reading with the next chapter.**`;
+
+const VARIANTS = {
+A: { name: "Current anatomy",
+  idea: "The six sections from prompt.md, in order: Where you are → Characters → Plot → Open threads → World → Right before you continue.",
+  judge: "Is the scene you need most (the last one) too far down? Is it clear what to read and what to just look up?",
+  md: `# Catch-up: Strange Case of Dr Jekyll and Mr Hyde by Robert Louis Stevenson
+${HEADER}
+
+## Where you are
+Hyde has vanished since the murder of Sir Danvers Carew. Dr Lanyon has died after a shock he refused to explain. Jekyll, after a few sociable months, has shut himself away again, and Utterson and Enfield have just seen him at his window, suddenly seized by terror.
+
+## Characters so far
+- **Mr Utterson**: a reserved, loyal lawyer and Jekyll's old friend. He is the one investigating.
+- **Dr Henry Jekyll**: a respected, wealthy doctor. He protects Hyde and won't say why.
+- **Edward Hyde**: a small man who leaves everyone with an inexplicable sense of disgust. Wanted for Carew's murder.
+- **Dr Lanyon**: Jekyll's former friend. They fell out over Jekyll's "unscientific" ideas. Died after a shock.
+- **Mr Enfield**: Utterson's distant relative and walking companion.
+- **Poole**: Jekyll's butler.
+- **Mr Guest**: Utterson's head clerk, a keen student of handwriting.
+- **Sir Danvers Carew**: an elderly MP, Utterson's client, murdered by Hyde.
+
+## Plot so far
+- **Ch 1, Story of the Door:** Enfield tells Utterson about a man who trampled a child at night, then paid her family with a cheque signed by a respectable name, fetched from behind a shabby door. The man's name: Hyde.
+- **Ch 2, Search for Mr. Hyde:** Jekyll's will leaves everything to Hyde, even if Jekyll merely disappears for three months. Lanyon has never heard of Hyde. Utterson waits at the door and meets Hyde, who repels him. Poole says the servants must obey Hyde, who has a key to the laboratory.
+- **Ch 3, Dr. Jekyll Was Quite at Ease:** Jekyll brushes off Utterson's worries and makes him promise to see that Hyde gets his rights.
+- **Ch 4, The Carew Murder Case:** A maid sees Hyde beat Sir Danvers Carew to death. The broken cane is one Utterson once gave Jekyll. Hyde's Soho rooms are ransacked; Hyde is gone.
+- **Ch 5, Incident of the Letter:** A sickly Jekyll swears he is done with Hyde and shows a letter from him. Poole says no such letter was delivered. Guest notices Hyde's handwriting resembles Jekyll's, only sloped differently.
+- **Ch 6, Remarkable Incident of Dr. Lanyon:** Jekyll returns to society for two months, then shuts his door. Lanyon, deathly ill after a shock, refuses to speak of Jekyll and dies, leaving Utterson a sealed envelope.
+- **Ch 7, Incident at the Window:** Utterson and Enfield see Jekyll at his window; a look of terror crosses his face and he slams it shut.
+
+## Open threads
+- Why does Jekyll's will leave everything to Hyde, even in case of a mere "disappearance"?
+- What hold does Hyde have over Jekyll?
+- What shock killed Lanyon, and what is in his envelope, "not to be opened till the death or disappearance of Dr. Henry Jekyll"?
+- Why does Hyde's handwriting resemble Jekyll's?
+- Where is Hyde?
+
+## World and terms
+Victorian London. Jekyll's house has an old laboratory behind it, with a shabby door onto a back street. Hyde had rooms in Soho.
+
+## Right before you continue
+On their usual Sunday walk, Enfield tells Utterson he has realised the shabby door is the back way into Jekyll's house. They step into the courtyard and see Jekyll at a half-open window, looking like a disconsolate prisoner. He chats with them but declines to come out. Mid-sentence, his smile vanishes and an expression of abject terror and despair freezes their blood. The window is thrust down. The two men walk away in silence, and Utterson murmurs, "God forgive us."`},
+
+B: { name: "Resume-first (inverted pyramid)",
+  idea: "Ordered by what you need to start reading again: the last scene first, then the situation, open questions, the story so far in brief, and finally a reference appendix.",
+  judge: "Does opening with the last scene help you jump back in, or is it disorienting without the context above it?",
+  md: `# Catch-up: Strange Case of Dr Jekyll and Mr Hyde by Robert Louis Stevenson
+${HEADER}
+
+## Where you stopped
+On their usual Sunday walk, **Utterson** and **Enfield** step into the courtyard behind **Dr Jekyll**'s house and see him at a half-open window, looking like a disconsolate prisoner. He chats with them but won't come out. Mid-sentence, his smile vanishes and an expression of abject terror and despair freezes their blood. The window is thrust down. The two men walk away in silence: "God forgive us."
+
+## The situation right now
+- **Hyde** has vanished since murdering Sir Danvers Carew.
+- **Lanyon** is dead after a shock he refused to explain, leaving Utterson a sealed envelope.
+- **Jekyll** has shut himself away again, and seems ill.
+
+## Questions in the air
+- What hold does Hyde have over Jekyll, and why does Jekyll's will leave everything to him, even in case of a mere "disappearance"?
+- What shock killed Lanyon, and what is in his envelope?
+- Why does Hyde's handwriting resemble Jekyll's?
+
+## How you got here
+Enfield's story of a man who trampled a child led Utterson to **Hyde**, the sole heir in Jekyll's will. Jekyll refused to explain, asking only that Hyde get his rights. A year later Hyde beat Sir Danvers Carew to death with a cane Utterson had once given Jekyll, then disappeared. Jekyll swore he was finished with Hyde and produced a letter from him, but Poole saw no such letter arrive, and Guest found the handwriting oddly like Jekyll's. Jekyll briefly rejoined society, then withdrew again, as Lanyon fell mortally ill after a shock.
+
+---
+
+### Reference: who's who
+- **Utterson**: reserved lawyer, Jekyll's friend, investigating.
+- **Jekyll**: respected doctor, protects Hyde.
+- **Hyde**: small, repellent, wanted for murder.
+- **Lanyon**: Jekyll's estranged friend, now dead.
+- **Enfield**: Utterson's relative and walking companion.
+- **Poole**: Jekyll's butler. **Guest**: Utterson's clerk.
+
+### Reference: places
+Jekyll's house, with the old laboratory behind it and its shabby back-street door · Hyde's former rooms in Soho.`},
+
+C: { name: "\"Previously on…\" narrative",
+  idea: "One flowing retelling, like a TV recap or a friend telling you the story, ending at the moment you stopped. A compact cast list and open questions follow.",
+  judge: "Does reading a story pull you back into the book's mood better than lists do? Can you still find a fact quickly?",
+  md: `# Catch-up: Strange Case of Dr Jekyll and Mr Hyde by Robert Louis Stevenson
+${HEADER}
+
+## Previously…
+It starts with a door. On a Sunday walk, **Mr Enfield** tells his relative, the reserved lawyer **Mr Utterson**, about a night he saw a small man trample a child and walk on. Made to pay damages, the man disappeared behind a shabby door and came back with a cheque signed by a highly respectable name. The man was called **Hyde**.
+
+The name troubles Utterson, because his friend **Dr Henry Jekyll** has made a will leaving everything to an "Edward Hyde", even if Jekyll should merely disappear for three months. Jekyll's old friend **Dr Lanyon** has never heard of Hyde. Utterson waits by the door until he meets Hyde himself, and comes away with a disgust he can't put into words. Jekyll, pressed at dinner, only asks Utterson to make sure Hyde gets his rights.
+
+Nearly a year later, a maid sees Hyde beat the elderly **Sir Danvers Carew** to death. The broken cane is one Utterson once gave Jekyll. Hyde's rooms in Soho are ransacked, and Hyde is gone. A shaken, sickly Jekyll swears he is finished with him and shows a farewell letter from Hyde, yet his butler **Poole** saw no letter arrive, and Utterson's clerk **Guest** notices the handwriting is strangely like Jekyll's.
+
+For two months Jekyll seems himself again. Then his door closes. Lanyon, looking like a man who has seen his death warrant, says he has had a shock he will never recover from, refuses to speak of Jekyll, and dies, leaving Utterson an envelope not to be opened until Jekyll's death or disappearance.
+
+**And this is where you stopped:** walking past the courtyard, Utterson and Enfield see Jekyll at his window, pale, chatting, until an expression of abject terror and despair crosses his face and the window slams shut. The two men walk on in silence. "God forgive us," says Utterson.
+
+---
+
+**Still unanswered:** Hyde's hold over Jekyll · the strange will · Lanyon's shock and envelope · the handwriting · where Hyde is.
+
+**Cast:** Utterson (lawyer, investigating) · Jekyll (doctor) · Hyde (wanted for murder) · Lanyon (dead) · Enfield (Utterson's relative) · Poole (butler) · Guest (clerk) · Carew (murdered MP)`},
+
+D: { name: "Timeline and tables",
+  idea: "Built for scanning and looking things up: a chapter-by-chapter table, a cast table showing when each character appears, and a table of open questions with the chapter that raised them.",
+  judge: "Is this faster to scan, or too dry to get you back into the story? Does it hold up on a phone or in NotebookLM, where tables may be cramped?",
+  md: `# Catch-up: Strange Case of Dr Jekyll and Mr Hyde by Robert Louis Stevenson
+${HEADER}
+
+**Where you are:** Hyde has vanished, Lanyon is dead, and Jekyll has just slammed his window shut in terror in front of Utterson and Enfield.
+
+## Timeline
+| Ch | What happened | Who |
+|---|---|---|
+| 1 | A man tramples a child, pays with a cheque signed by a respectable name, from behind a shabby door. His name is Hyde. | Enfield, Utterson |
+| 2 | Jekyll's will leaves everything to Hyde. Utterson meets Hyde and is repelled. Hyde has a key to the laboratory. | Utterson, Lanyon, Hyde, Poole |
+| 3 | Jekyll asks Utterson to make sure Hyde gets his rights. | Jekyll, Utterson |
+| 4 | Hyde beats Sir Danvers Carew to death with Jekyll's cane, then vanishes from his Soho rooms. | Hyde, Carew, Utterson |
+| 5 | Sickly Jekyll shows a letter from Hyde. No one saw it delivered. Hyde's hand resembles Jekyll's. | Jekyll, Poole, Guest |
+| 6 | Jekyll rejoins society, then withdraws. Lanyon dies after a shock, leaving a sealed envelope. | Jekyll, Lanyon, Utterson |
+| 7 | Jekyll, at his window, is seized by terror and slams it shut. | Utterson, Enfield, Jekyll |
+
+## Who's who
+| Character | Who they are | Appears in |
+|---|---|---|
+| Utterson | Reserved lawyer, Jekyll's friend, investigating | 1–7 |
+| Jekyll | Respected doctor, protects Hyde | 3, 5–7 |
+| Hyde | Small, repellent man, wanted for murder | 2, 4 |
+| Lanyon | Jekyll's estranged friend; dies in ch 6 | 2, 6 |
+| Enfield | Utterson's relative, walking companion | 1, 7 |
+| Poole | Jekyll's butler | 2, 5, 6 |
+| Guest | Utterson's clerk, handwriting expert | 5 |
+
+## Open questions
+| Question | Raised in |
+|---|---|
+| Why does Jekyll's will favour Hyde, even on a mere "disappearance"? | 2 |
+| What hold does Hyde have over Jekyll? | 2–3 |
+| Why does Hyde's handwriting resemble Jekyll's? | 5 |
+| What shock killed Lanyon? What is in his envelope? | 6 |
+| What terrified Jekyll at the window? | 7 |
+
+## Right before you continue
+Utterson and Enfield see Jekyll at a half-open window. He chats, then his face shows abject terror and despair, and the window slams shut. They walk away in silence.`},
+
+E: { name: "Layered depth (read as much as you need)",
+  idea: "One document with three levels: 30 seconds, 3 minutes, full detail. You stop reading once you remember enough. This could replace the Quick / Standard / Detailed setup question.",
+  judge: "Does removing a setup question while serving every reader beat the repetition between levels? Does the full level feel redundant after the 3-minute one?",
+  md: `# Catch-up: Strange Case of Dr Jekyll and Mr Hyde by Robert Louis Stevenson
+${HEADER}
+
+*Read until you remember enough, then stop. Each level adds detail to the one before.*
+
+## In 30 seconds
+- Lawyer **Utterson** is investigating **Hyde**, a repellent man whom his friend **Dr Jekyll** protects and has made his heir.
+- Hyde murdered Sir Danvers Carew and has vanished. **Lanyon** died after a shock.
+- You stopped right after Jekyll, at his window, was seized by terror and slammed it shut.
+
+## In 3 minutes
+**The mystery (ch 1–3).** Enfield's story of a man trampling a child leads Utterson to Hyde, the sole heir in Jekyll's will, even if Jekyll merely disappears. Utterson meets Hyde and is repelled; Jekyll refuses to explain.
+
+**The murder (ch 4–5).** Hyde beats Sir Danvers Carew to death with a cane belonging to Jekyll and vanishes. Jekyll swears he's done with Hyde and shows a letter from him, but no one saw it delivered, and the handwriting resembles Jekyll's.
+
+**The withdrawal (ch 6–7).** Jekyll briefly rejoins society, then shuts himself away. Lanyon dies after a shock, leaving a sealed envelope. Utterson and Enfield see Jekyll at his window, struck by terror.
+
+**Still open:** Hyde's hold over Jekyll · the will · Lanyon's shock and envelope · the handwriting.
+
+## Full detail
+### Chapter by chapter
+- **Ch 1:** Enfield tells of the trampled child and the cheque from behind the shabby door.
+- **Ch 2:** The will; Lanyon has never heard of Hyde; Utterson meets Hyde; Hyde has a key to the laboratory.
+- **Ch 3:** Jekyll asks Utterson to see that Hyde gets his rights.
+- **Ch 4:** The maid witnesses Carew's murder; the broken cane; Hyde's Soho rooms ransacked.
+- **Ch 5:** Jekyll's letter from Hyde; Poole saw no delivery; Guest's handwriting comparison.
+- **Ch 6:** Jekyll's two good months; Lanyon's shock, death and envelope.
+- **Ch 7:** The window.
+
+### Who's who
+Utterson (lawyer) · Jekyll (doctor) · Hyde (wanted) · Lanyon (dead) · Enfield (Utterson's relative) · Poole (butler) · Guest (clerk) · Carew (murdered MP)
+
+### Right before you continue
+Jekyll, at a half-open window, chats with Utterson and Enfield until an expression of abject terror and despair crosses his face. The window is thrust down. The two men walk away in silence: "God forgive us."`},
+
+F: { name: "Research hybrid",
+  idea: "The story so far as cause-and-effect prose by arc, then Where you are (the current state merged with a close account of the last scene), then open threads including characters' intentions, then reference material below a divider.",
+  judge: "Does the story still make sense without a frame before it? Does ending on open threads (rather than the last scene) send you back to the book well?",
+  md: `# Catch-up: Strange Case of Dr Jekyll and Mr Hyde by Robert Louis Stevenson
+${HEADER}
+
+## The story so far
+**The will.** The lawyer **Utterson** has an old friend, **Dr Jekyll**, and a growing worry about him. On a Sunday walk, Utterson's relative **Enfield** tells of a small man who trampled a child at night, then paid her family with a cheque signed by a highly respectable name, fetched from behind a shabby door (Ch. 1). The man's name, Hyde, alarms Utterson, because Jekyll's will leaves everything to an Edward Hyde, even if Jekyll merely disappears for three months. Jekyll's old friend **Dr Lanyon** has never heard of him, so Utterson waits by the door until he meets Hyde himself, and comes away with a disgust he cannot explain (Ch. 2). Jekyll's butler **Poole** says the servants have orders to obey Hyde, who has a key to the laboratory. When Utterson raises the will, Jekyll refuses to discuss it and makes him promise to see that Hyde gets his rights (Ch. 3).
+
+**The murder.** Nearly a year later, a maid sees Hyde beat the elderly **Sir Danvers Carew** to death. Because the broken cane is one Utterson once gave Jekyll, Utterson leads the police to Hyde's rooms in Soho, but Hyde has fled (Ch. 4). A sickly Jekyll swears he is done with Hyde and shows a letter in which Hyde says he has a safe means of escape. Yet Poole saw no letter delivered, and Utterson's clerk **Guest** notices that Hyde's handwriting is strangely like Jekyll's, only sloped differently. Utterson concludes, with horror, that Jekyll may have forged a letter for a murderer (Ch. 5).
+
+**The withdrawal.** With Hyde gone, Jekyll returns to society for two good months, then suddenly shuts his door. Utterson finds Lanyon looking like a man under a death sentence: he has had a shock he will never recover from and refuses to speak of Jekyll. Lanyon dies within weeks, leaving Utterson an envelope "not to be opened till the death or disappearance of Dr. Henry Jekyll". Jekyll writes that he will now live in seclusion (Ch. 6).
+
+## Where you are
+Hyde has vanished since the murder, Lanyon is dead, and Jekyll has shut himself away, ill. Utterson still wants to understand Jekyll's tie to Hyde.
+
+In the last scene, on another Sunday walk, Enfield says that at least the Hyde story is over. He has realised the shabby door is the back way into Jekyll's house, so the two men step into the courtyard. At a half-open window sits Jekyll, "like some disconsolate prisoner". He says he is very low and declines to come down, but is glad to talk from the window. Then, mid-conversation, his smile is struck from his face by "an expression of such abject terror and despair, as froze the very blood" of the men below. The window is thrust down at once. The two walk away in silence, pale, until Utterson says, "God forgive us."
+
+## Open threads
+- What hold does Hyde have over Jekyll, and why does the will provide for a mere "disappearance"?
+- What shock destroyed Lanyon, and what is in his envelope?
+- Why does Hyde's handwriting resemble Jekyll's?
+- Where is Hyde?
+- What did Jekyll see, or feel, at the window?
+- Utterson still means to learn what Jekyll is hiding. Jekyll means to stay shut away.
+
+**Continue with the next chapter.**
+
+---
+
+*Reference: look up as needed.*
+
+### Characters so far
+- **Utterson**: reserved, loyal lawyer. Wants to protect Jekyll and understand his tie to Hyde. Keeps Jekyll's will and Lanyon's envelope.
+- **Dr Henry Jekyll**: respected doctor, Utterson's friend. Wants to be left alone; says he is finished with Hyde. Ill and secluded.
+- **Edward Hyde**: small man who disgusts everyone who meets him, for reasons no one can name. Jekyll's heir, Carew's murderer, now vanished.
+- **Dr Lanyon**: Jekyll's old friend, estranged over Jekyll's "unscientific" ideas. Died after a shock he would not explain.
+- **Enfield**: Utterson's relative and walking companion. Told the story of the door.
+- **Poole**: Jekyll's butler. **Guest**: Utterson's clerk, a student of handwriting. **Sir Danvers Carew**: elderly MP, murdered by Hyde.
+
+### World and terms
+- **London**: Victorian London, where the whole story takes place so far.
+- **Jekyll's house**: a respected doctor's home in a fine square. Behind it stands an old laboratory.
+- **The laboratory**: the old dissecting theatre behind Jekyll's house, where Jekyll works. Hyde has a key.
+- **The cabinet**: Jekyll's private room above the laboratory, where he now shuts himself away.
+- **The shabby door**: a neglected door on a back street, the laboratory's rear entrance. Where Enfield saw Hyde go in, and where Utterson waited for him.
+- **Soho**: the district where Hyde had his rooms, searched after the murder.`}
+};
+
+const KEYS = Object.keys(VARIANTS);
+let raw = false;
+const params = new URLSearchParams(location.search);
+let current = KEYS.includes(params.get("variant")) ? params.get("variant") : "A";
+
+function render() {
+  const v = VARIANTS[current];
+  document.getElementById("brief").innerHTML =
+    `<h2>${current} · ${v.name}</h2><p><strong>Idea:</strong> ${v.idea}</p><p><strong>Judge it by:</strong> ${v.judge}</p>`;
+  const out = document.getElementById("out");
+  if (raw || !window.marked) out.innerHTML = `<pre class="raw"></pre>`, out.firstChild.textContent = v.md;
+  else out.innerHTML = marked.parse(v.md);
+  const words = v.md.split(/\s+/).filter(Boolean).length;
+  document.getElementById("stats").textContent =
+    `${v.md.length.toLocaleString()} chars · ${words} words · ~${Math.max(1, Math.round(words / 230))} min read`;
+  document.getElementById("rawToggle").textContent = raw ? "Show rendered" : "Show raw Markdown";
+  document.getElementById("label").textContent = `${current} (${v.name})`;
+  const url = new URL(location.href); url.searchParams.set("variant", current);
+  history.replaceState(null, "", url);
+  window.scrollTo(0, 0);
+}
+function step(d) { current = KEYS[(KEYS.indexOf(current) + d + KEYS.length) % KEYS.length]; render(); }
+document.getElementById("prev").onclick = () => step(-1);
+document.getElementById("next").onclick = () => step(1);
+document.getElementById("rawToggle").onclick = () => { raw = !raw; render(); };
+document.addEventListener("keydown", e => {
+  const t = e.target;
+  if (t.closest && t.closest("input, textarea, [contenteditable]")) return;
+  if (e.key === "ArrowLeft") step(-1);
+  if (e.key === "ArrowRight") step(1);
+});
+render();
+</script>
+</body>
+</html>
